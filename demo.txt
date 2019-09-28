@@ -1,6 +1,4 @@
 Om Kheni
 Surat
-<<<<<<< HEAD
-=======
+Maliba
 UTU
->>>>>>> dd41cc48ea591575474ea6b4dc3e87cff4945c0a
