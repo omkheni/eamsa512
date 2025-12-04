@@ -87,6 +87,7 @@ EAMSA 512 is an advanced cryptographic library and framework designed to provide
 Clone the repository:
 
 git clone https://github.com/Redeaux-Corporation/eamsa512.git
+
 cd eamsa512
 
 
