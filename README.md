@@ -26,12 +26,20 @@ EAMSA 512 is an advanced cryptographic library and framework designed to provide
 ## Features
 
 ✅ 512-bit block cipher with modified SALSA20
+
 ✅ 1024-bit key material (NIST SP 800-56A KDF)
+
 ✅ HMAC-SHA3-512 authentication
+
 ✅ HSM integration (Thales, YubiHSM, AWS Nitro)
+
 ✅ Docker/Kubernetes/Systemd ready
+
 ✅ 6-10 MB/s throughput
+
 ✅ 100/100 compliance score
+
+
 
 - **Security**  
   - FIPS 140-2 Level 2 certified cryptographic implementation  
