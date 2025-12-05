@@ -1,20 +1,14 @@
-\# EAMSA 512 API Reference
+# EAMSA 512 API Reference
 
-
-
-\## 1. Overview
-
-
+## 1. Overview
 
 This document describes the public interfaces exposed by EAMSA 512:
 
+- Go library API for direct embedding.
 
+- Command-line interface (CLI) for operators and scripts.
 
-\- Go library API for direct embedding.
-
-\- Command-line interface (CLI) for operators and scripts.
-
-\- HTTP/JSON REST API for remote clients and services.
+- HTTP/JSON REST API for remote clients and services.
 
 
 
@@ -26,49 +20,41 @@ All APIs are designed around authenticated encryption with associated data (AEAD
 
 
 
-\## 2. Go library API
+## 2. Go library API
 
 
 
-\### 2.1 Package layout
-
-
+### 2.1 Package layout
 
 The primary packages are:
 
 
 
-\- `eamsa512/chaos` – Chaos-based entropy generator.
+- `eamsa512/chaos` – Chaos-based entropy generator.
 
-\- `eamsa512/kdf` – SHA3‑512 based KDF and key agreement helpers.
+- `eamsa512/kdf` – SHA3‑512 based KDF and key agreement helpers.
 
-\- `eamsa512/cipher` – 512‑bit core encryption and decryption (Phase 2).
+- `eamsa512/cipher` – 512‑bit core encryption and decryption (Phase 2).
 
-\- `eamsa512/auth` – HMAC‑SHA3‑512 authentication (Phase 3).
+- `eamsa512/auth` – HMAC‑SHA3‑512 authentication (Phase 3).
 
-\- `eamsa512/hsm` – HSM integration and abstraction.
+- `eamsa512/hsm` – HSM integration and abstraction.
 
-\- `eamsa512/keys` – Key lifecycle management.
+- `eamsa512/keys` – Key lifecycle management.
 
-\- `eamsa512/compliance` – Compliance checks and reporting.
+- `eamsa512/compliance` – Compliance checks and reporting.
 
-
-
-Package names can be adjusted to match your actual module path.
-
-
+  
 
 ---
 
 
-
-\### 2.2 Chaos generator
-
+### 2.2 Chaos generator
 
 
+
+```go
 package chaos
-
-
 
 // Generator represents a chaos-based entropy source instance.
 
@@ -107,8 +93,7 @@ Typical usage:
 g, \_ := chaos.NewGenerator()
 
 raw, \_ := g.Bytes(4096)
-
-
+```
 
 
 
@@ -116,10 +101,10 @@ raw, \_ := g.Bytes(4096)
 
 
 
-\### 2.3 KDF and key agreement
+### 2.3 KDF and key agreement
 
 
-
+```go
 package kdf
 
 
@@ -128,13 +113,13 @@ package kdf
 
 type KDFParams struct {
 
-Z \[]byte // shared secret
+Z []byte // shared secret
 
-Nonce \[]byte // per-session nonce
+Nonce []byte // per-session nonce
 
-Chaos \[]byte // conditioned chaos\_output
+Chaos []byte // conditioned chaos_output
 
-OtherInfo \[]byte // context as specified in key-agreement-spec.md
+OtherInfo []byte // context as specified in key-agreement-spec.md
 
 KeyCount int // number of 128-bit keys to derive (default 11)
 
@@ -144,8 +129,8 @@ KeyCount int // number of 128-bit keys to derive (default 11)
 
 // DeriveKeys returns KeyCount 128-bit keys derived from the inputs.
 
-func DeriveKeys(p KDFParams) (\[]\[]byte, error)
-
+func DeriveKeys(p KDFParams) ([][]byte, error)
+```
 
 
 
@@ -153,7 +138,7 @@ func DeriveKeys(p KDFParams) (\[]\[]byte, error)
 Example:
 
 
-
+```
 params := kdf.KDFParams{
 
 Z: masterSecret,
@@ -169,7 +154,7 @@ KeyCount: 11,
 }
 
 keys, err := kdf.DeriveKeys(params)
-
+```
 
 
 
@@ -178,12 +163,13 @@ keys, err := kdf.DeriveKeys(params)
 
 
 
-\### 2.4 Core cipher (Phase 2)
+### 2.4 Core cipher (Phase 2)
 
 
 
 
 
+```go
 package cipher
 
 
@@ -206,20 +192,20 @@ type Cipher struct {
 
 // NewCipher constructs a cipher instance from 11 × 128-bit subkeys.
 
-func NewCipher(subkeys \[]\[]byte) (\*Cipher, error)
+func NewCipher(subkeys [][]byte) (*Cipher, error)
 
 
 
 // Encrypt encrypts plaintext and returns ciphertext (may be padded or chunked).
 
-func (c \*Cipher) Encrypt(plaintext \[]byte) (\[]byte, error)
+func (c *Cipher) Encrypt(plaintext []byte) ([]byte, error)
 
 
 
 // Decrypt decrypts ciphertext and returns the original plaintext.
 
-func (c \*Cipher) Decrypt(ciphertext \[]byte) (\[]byte, error)
-
+func (c *Cipher) Decrypt(ciphertext []byte) ([]byte, error)
+```
 
 
 
@@ -228,22 +214,16 @@ func (c \*Cipher) Decrypt(ciphertext \[]byte) (\[]byte, error)
 
 
 
-\### 2.5 Authentication (Phase 3)
+### 2.5 Authentication (Phase 3)
 
 
-
+```go
 package auth
 
-
-
 // MACSize is the HMAC-SHA3-512 output size in bytes.
-
 const MACSize = 64
 
-
-
 // Auth provides per-block authentication using HMAC-SHA3-512.
-
 type Auth struct {
 
 // internal state
@@ -253,21 +233,18 @@ type Auth struct {
 
 
 // NewAuth creates a new authentication context with the given key.
-
-func NewAuth(key \[]byte) \*Auth
+func NewAuth(key []byte) *Auth
 
 
 
 // Compute computes HMAC-SHA3-512 over data and optional associatedData.
-
-func (a \*Auth) Compute(data, associatedData \[]byte) (\[]byte, error)
+func (a *Auth) Compute(data, associatedData []byte) ([]byte, error)
 
 
 
 // Verify recomputes the MAC and compares it in constant time.
-
-func (a \*Auth) Verify(data, associatedData, mac \[]byte) error
-
+func (a *Auth) Verify(data, associatedData, mac []byte) error
+```
 
 
 
@@ -276,10 +253,10 @@ func (a \*Auth) Verify(data, associatedData, mac \[]byte) error
 
 
 
-\### 2.6 HSM integration
+### 2.6 HSM integration
 
 
-
+```go
 package hsm
 
 
@@ -290,11 +267,11 @@ type Provider interface {
 
 GenerateKey(label string, sizeBits int) (keyID string, err error)
 
-GetKey(labelOrID string) (\[]byte, error)
+GetKey(labelOrID string) ([]byte, error)
 
 DestroyKey(labelOrID string) error
 
-Sign(labelOrID string, data \[]byte) (\[]byte, error)
+Sign(labelOrID string, data []byte) ([]byte, error)
 
 }
 
@@ -306,7 +283,7 @@ type Config struct {
 
 Type string // e.g. "thales", "yubihsm", "aws-cloudhsm", "softhsm"
 
-Params map\[string]string // vendor-specific connection info
+Params map[string]string // vendor-specific connection info
 
 }
 
@@ -315,8 +292,7 @@ Params map\[string]string // vendor-specific connection info
 // NewProvider returns a Provider for the given configuration.
 
 func NewProvider(cfg Config) (Provider, error)
-
-
+```
 
 
 
@@ -324,10 +300,10 @@ func NewProvider(cfg Config) (Provider, error)
 
 
 
-\### 2.7 Key lifecycle management
+### 2.7 Key lifecycle management
 
 
-
+```go
 package keys
 
 
@@ -384,18 +360,18 @@ type Manager struct {
 
 // NewManager constructs a Manager bound to an HSM Provider (or software backend).
 
-func NewManager(p hsm.Provider) \*Manager
+func NewManager(p hsm.Provider) *Manager
 
 
 
-func (m \*Manager) Generate(label string, sizeBits int) (KeyMetadata, error)
+func (m *Manager) Generate(label string, sizeBits int) (KeyMetadata, error)
 
-func (m \*Manager) Rotate(label string) (KeyMetadata, error)
+func (m *Manager) Rotate(label string) (KeyMetadata, error)
 
-func (m \*Manager) Get(labelOrID string) (KeyMetadata, \[]byte, error)
+func (m *Manager) Get(labelOrID string) (KeyMetadata, []byte, error)
 
-func (m \*Manager) Revoke(labelOrID string) error
-
+func (m *Manager) Revoke(labelOrID string) error
+```
 
 
 
@@ -404,10 +380,10 @@ func (m \*Manager) Revoke(labelOrID string) error
 
 
 
-\### 2.8 Compliance API
+### 2.8 Compliance API
 
 
-
+```go
 package compliance
 
 
@@ -448,8 +424,8 @@ EntropyValidationPassed bool
 
 // RunFull performs all checks and returns a populated report.
 
-func RunFull() (\*Report, error)
-
+func RunFull() (*Report, error)
+```
 
 
 
@@ -458,21 +434,17 @@ func RunFull() (\*Report, error)
 
 
 
-\## 3. HTTP REST API
+## 3. HTTP REST API
 
+### 3.1 Conventions
 
+- Base URL: `https://HOST:PORT/api/v1`
 
-\### 3.1 Conventions
+- Content type: `application/json`
 
+- Authentication: bearer tokens, mTLS, or network-level controls (implementation-dependent).
 
-
-\- Base URL: `https://HOST:PORT/api/v1`
-
-\- Content type: `application/json`
-
-\- Authentication: bearer tokens, mTLS, or network-level controls (implementation-dependent).
-
-\- Responses use standard HTTP status codes plus JSON bodies with `error` fields when applicable.
+- Responses use standard HTTP status codes plus JSON bodies with `error` fields when applicable.
 
 
 
@@ -480,10 +452,10 @@ func RunFull() (\*Report, error)
 
 
 
-\### 3.2 Endpoints overview
+### 3.2 Endpoints overview
 
 
-
+```
 | Method | Path                          | Description                         | Auth |
 
 |--------|-------------------------------|-------------------------------------|------|
@@ -503,61 +475,53 @@ func RunFull() (\*Report, error)
 
 
 Base path `/api/v1` is implied in examples.
-
+```
 
 
 ---
 
 
 
-\### 3.3 `/encrypt` (POST)
-
+### 3.3 `/encrypt` (POST)
 
 
 Encrypts input data and returns ciphertext and MAC.
 
+*\*Request*\*
 
 
-\*\*Request\*\*
-
-
-
+```
 POST /api/v1/encrypt
 
 Content-Type: application/json
 
 Authorization: Bearer <token>
-
-
-
+```
 
 
 Body:
 
 
-
+```
 {
 
-"key\_id": "primary-enc-key",
+"key_id": "primary-enc-key",
 
 "plaintext": "base64-encoded-plaintext",
 
-"associated\_data": "base64-encoded-ad",
+"associated_data": "base64-encoded-ad",
 
 "nonce": "base64-encoded-nonce (optional)"
 
 }
+```
 
 
 
+*\*Response*\*
 
 
-
-
-\*\*Response\*\*
-
-
-
+```
 {
 
 "ciphertext": "base64-encoded-ciphertext",
@@ -567,20 +531,18 @@ Body:
 "nonce": "base64-encoded-nonce"
 
 }
-
+```
 
 
 
 
 Errors:
 
+- `400` for invalid input.
 
+- `401/403` for auth failures.
 
-\- `400` for invalid input.
-
-\- `401/403` for auth failures.
-
-\- `500` for internal or HSM failures.
+- `500` for internal or HSM failures.
 
 
 
@@ -588,7 +550,7 @@ Errors:
 
 
 
-\### 3.4 `/decrypt` (POST)
+### 3.4 `/decrypt` (POST)
 
 
 
@@ -596,9 +558,7 @@ Decrypts ciphertext and verifies its MAC.
 
 
 
-\*\*Request\*\*
-
-
+*\*Request*\*
 
 POST /api/v1/decrypt
 
@@ -608,45 +568,42 @@ Authorization: Bearer <token>
 
 
 
-
-
 Body:
 
-
-
+```
 {
 
-"key\_id": "primary-enc-key",
+"key_id": "primary-enc-key",
 
 "ciphertext": "base64-encoded-ciphertext",
 
 "mac": "base64-encoded-mac",
 
-"associated\_data": "base64-encoded-ad",
+"associated_data": "base64-encoded-ad",
 
 "nonce": "base64-encoded-nonce"
 
 }
+```
 
 
 
 
-
-\*\*Response\*\*
-
+*\*Response*\*
 
 
+```
 {
 
 "plaintext": "base64-encoded-plaintext"
 
 }
+```
 
 
 
 
-
-If MAC verification fails, the service returns `400` or `401` with an error and \*\*does not\*\* reveal which component failed.
+If MAC verification fails, the service returns `400` or `401` with an error and *\*does not*\* reveal which component failed.
 
 
 
@@ -654,60 +611,58 @@ If MAC verification fails, the service returns `400` or `401` with an error and 
 
 
 
-\### 3.5 `/compliance/report` (GET)
+### 3.5 `/compliance/report` (GET)
 
 
 
 Returns the complete compliance report.
 
+*\*Request*\*
 
 
-\*\*Request\*\*
-
-
-
+```
 GET /api/v1/compliance/report
 
 Authorization: Bearer <token>
+```
 
 
 
 
-
-\*\*Response\*\*
-
+*\*Response*\*
 
 
+```
 {
 
-"system\_version": "1.1",
+"system_version": "1.1",
 
-"compliance\_score": 100,
+"compliance_score": 100,
 
-"fips\_140\_2\_level\_2": true,
+"fips_140_2_level_2": true,
 
-"nist\_sp\_800\_56a": true,
+"nist_sp_800_56a": true,
 
-"rfc\_2104\_hmac": true,
+"rfc_2104_hmac": true,
 
-"nist\_fips\_202\_sha3": true,
+"nist_fips_202_sha3": true,
 
-"ietf\_standards": true,
+"ietf_standards": true,
 
-"go\_security\_best\_practices": true,
+"go_security_best_practices": true,
 
-"cve\_vulnerabilities": 0,
+"cve_vulnerabilities": 0,
 
-"test\_coverage": 95.5,
+"test_coverage": 95.5,
 
-"known\_answer\_tests\_passed": true,
+"known_answer_tests_passed": true,
 
-"entropy\_validation\_passed": true,
+"entropy_validation_passed": true,
 
 "timestamp": "2025-12-04T12:00:00Z"
 
 }
-
+```
 
 
 
@@ -716,7 +671,7 @@ Authorization: Bearer <token>
 
 
 
-\### 3.6 `/keys/{id}/status` (GET)
+### 3.6 `/keys/{id}/status` (GET)
 
 
 
@@ -724,22 +679,22 @@ Returns lifecycle metadata for a given key.
 
 
 
-\*\*Request\*\*
+*\*Request*\*
 
 
-
+```
 GET /api/v1/keys/{id}/status
 
 Authorization: Bearer <token>
+```
 
 
 
 
-
-\*\*Response\*\*
-
+*\*Response*\*
 
 
+```
 {
 
 "id": "primary-enc-key",
@@ -750,12 +705,12 @@ Authorization: Bearer <token>
 
 "algorithm": "EAMSA512-KDF-SHA3-512",
 
-"created\_at": "2025-01-01T00:00:00Z",
+"created_at": "2025-01-01T00:00:00Z",
 
-"expires\_at": "2026-01-01T00:00:00Z"
+"expires_at": "2026-01-01T00:00:00Z"
 
 }
-
+```
 
 
 
@@ -764,56 +719,53 @@ Authorization: Bearer <token>
 
 
 
-\### 3.7 `/keys/{id}/rotate` (POST)
-
-
+### 3.7 `/keys/{id}/rotate` (POST)
 
 Triggers rotation of the given key through the key manager and HSM (if configured).
 
 
 
-\*\*Request\*\*
+*\*Request*\*
 
 
-
+```
 POST /api/v1/keys/{id}/rotate
 
 Authorization: Bearer <token>
 
 Content-Type: application/json
-
-
+```
 
 
 
 Optional body:
 
 
-
+```
 {
 
 "reason": "scheduled-rotation"
 
 }
+```
 
 
-
-\*\*Response\*\*
-
+*\*Response*\*
 
 
+```json
 {
 
 "id": "primary-enc-key",
 
 "state": "active",
 
-"previous\_id": "primary-enc-key-2025-01",
+"previous_id": "primary-enc-key-2025-01",
 
-"rotated\_at": "2025-06-01T00:00:00Z"
+"rotated_at": "2025-06-01T00:00:00Z"
 
 }
-
+```
 
 
 
@@ -822,7 +774,7 @@ Optional body:
 
 
 
-\### 3.8 `/health` (GET)
+### 3.8 `/health` (GET)
 
 
 
@@ -830,20 +782,20 @@ Basic liveness and readiness endpoint.
 
 
 
-\*\*Request\*\*
+*\*Request*\*
 
 
-
+```
 GET /api/v1/health
+```
 
 
 
 
-
-\*\*Response\*\*
-
+*\*Response*\*
 
 
+```json
 {
 
 "status": "ok",
@@ -853,9 +805,7 @@ GET /api/v1/health
 "self\_tests\_passed": true
 
 }
-
-
-
+```
 
 
 This endpoint should not expose sensitive internal metrics and is suitable for Kubernetes or load balancer health checks.
@@ -866,7 +816,7 @@ This endpoint should not expose sensitive internal metrics and is suitable for K
 
 
 
-\## 4. Command-line interface (CLI)
+## 4. Command-line interface (CLI)
 
 
 
@@ -874,52 +824,52 @@ The `eamsa512` binary provides subcommands and flags.
 
 
 
-\### 4.1 Global flags
+### 4.1 Global flags
 
 
 
-\- `-config <path>` – Path to `eamsa512.yaml` (default: `./config/eamsa512.yaml`).
+- `-config <path>` – Path to `eamsa512.yaml` (default: `./config/eamsa512.yaml`).
 
-\- `-log-level <level>` – `DEBUG`, `INFO`, `WARN`, `ERROR`.
+- `-log-level <level>` – `DEBUG`, `INFO`, `WARN`, `ERROR`.
 
-\- `-hsm-config <path>` – Vendor-specific HSM configuration.
+- `-hsm-config <path>` – Vendor-specific HSM configuration.
 
 
 
-\### 4.2 Common commands
+### 4.2 Common commands
 
 
 
 Encryption / decryption
-
+```
 eamsa512 -encrypt -in plaintext.txt -out ciphertext.enc
 
 eamsa512 -decrypt -in ciphertext.enc -out decrypted.txt
-
+```
 
 
 Self-tests and compliance
-
+```
 eamsa512 -test-all
 
 eamsa512 -compliance-report
-
+```
 
 
 Server mode
-
+```
 eamsa512 -serve -config ./config/eamsa512.yaml
-
+```
 
 
 Key lifecycle operations
-
+```
 eamsa512 -generate-key -id primary-enc-key
 
 eamsa512 -rotate-key -id primary-enc-key
 
 eamsa512 -key-status -id primary-enc-key
-
+```
 
 
 
@@ -932,18 +882,18 @@ Each command should exit with non‑zero status on failure so it can be scripted
 
 
 
-\## 5. Error model and versioning
+## 5. Error model and versioning
 
 
 
-\### 5.1 Error responses (REST)
+### 5.1 Error responses (REST)
 
 
 
 JSON error responses follow a simple schema:
 
 
-
+```json
 {
 
 "error": "human-readable message",
@@ -953,7 +903,7 @@ JSON error responses follow a simple schema:
 "details": {}
 
 }
-
+```
 
 
 
@@ -962,29 +912,28 @@ Example codes:
 
 
 
-\- `INVALID\_ARGUMENT`
+- `INVALID_ARGUMENT`
 
-\- `UNAUTHENTICATED`
+- `UNAUTHENTICATED`
 
-\- `PERMISSION\_DENIED`
+- `PERMISSION_DENIED`
 
-\- `INTERNAL`
+- `INTERNAL`
 
-\- `HSM\_ERROR`
+- `HSM_ERROR`
 
-\- `COMPLIANCE\_FAILURE`
-
-
-
-\### 5.2 Versioning
+- `COMPLIANCE_FAILURE`
 
 
 
-\- API version is encoded in the base path (`/api/v1`).
+### 5.2 Versioning
 
-\- Backwards‑incompatible changes MUST result in a new version (`/api/v2`).
 
-\- The Go module should use semantic versioning tags (`v1.x.y`).
+- API version is encoded in the base path (`/api/v1`).
+
+- Backwards‑incompatible changes MUST result in a new version (`/api/v2`).
+
+- The Go module should use semantic versioning tags (`v1.x.y`).
 
 
 
@@ -992,17 +941,17 @@ Example codes:
 
 
 
-\## 6. Best practices
+## 6. Best practices
 
 
+- Prefer the Go library API for latency‑sensitive, in‑process use.
 
-\- Prefer the Go library API for latency‑sensitive, in‑process use.
+- Use the REST API for language‑agnostic, networked services.
 
-\- Use the REST API for language‑agnostic, networked services.
+- Route all key‑material operations through the key manager and HSM integration where available.
 
-\- Route all key‑material operations through the key manager and HSM integration where available.
+- Wrap calls in retry logic for transient HSM or network failures but avoid infinite retries.
 
-\- Wrap calls in retry logic for transient HSM or network failures but avoid infinite retries.
 
 
 
