@@ -4,7 +4,7 @@
 
 ### Step 1: Clone Repository
 ```bash
-git clone https://github.com/yourorg/eamsa512.git
+git clone https://github.com/Redeaux-Corporation/eamsa512.git
 cd eamsa512
 ```
 
