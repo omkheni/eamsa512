@@ -42,10 +42,10 @@ This document provides the definitive index of all files, documentation, and res
 |------|-------|---------|--------|
 | `hsm-integration.go` | 150 | HSM abstraction & tamper detection | ✅ Created |
 | `key-lifecycle.go` | 120 | Key lifecycle management | ✅ Created |
-| `kat-tests.go` | 100 | Known answer tests | ⏳ Ready to Create |
-| `rbac.go` | 80 | Role-based access control | ⏳ Ready to Create |
-| `kdf-compliance.go` | 100 | NIST SP 800-56A compliance | ⏳ Ready to Create |
-| `compliance-report.go` | 50 | Compliance verification | ⏳ Ready to Create |
+| `kat-tests.go` | 100 | Known answer tests | ✅ Created |
+| `rbac.go` | 80 | Role-based access control | ✅ Created |
+| `kdf-compliance.go` | 100 | NIST SP 800-56A compliance | ✅ Created |
+| `compliance-report.go` | 50 | Compliance verification | ✅ Created |
 
 **Total Compliance**: 600+ lines
 
@@ -56,10 +56,10 @@ This document provides the definitive index of all files, documentation, and res
 | `deployment-guide.md` | 500+ | Production deployment guide | ✅ Created |
 | `dev-quickstart.md` | 400+ | Developer quick start | ✅ Created |
 | `fips-140-2-compliance.md` | 200+ | FIPS 140-2 compliance guide | ✅ Created |
-| `key-agreement-spec.md` | 50+ | Key agreement specification | ⏳ Ready |
-| `entropy-source-spec.md` | 30+ | Entropy source documentation | ⏳ Ready |
+| `key-agreement-spec.md` | 50+ | Key agreement specification | ✅ Created |
+| `entropy-source-spec.md` | 30+ | Entropy source documentation | ✅ Created |
 | `README.md` | updated | Project overview | ✅ Updated |
-| `api-reference.md` | 100+ | Complete API reference | ⏳ Ready |
+| `api-reference.md` | 100+ | Complete API reference | ✅ Created |
 
 **Total Documentation**: 1,200+ lines
 
