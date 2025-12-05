@@ -1,6 +1,7 @@
 # EAMSA 512 - Production-Ready Go Implementation
 
 **NEWS**: *EAMSA 512 TypeScript is under development!* [(read more)](NEWS.md)
+
 **Status**: 🚀 **PRODUCTION READY FOR DEPLOYMENT**
 
 ## Overview
