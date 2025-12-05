@@ -66,9 +66,9 @@ The KDF takes the following inputs:
 
 - `nonce`: A 128‑bit per‑session value, unique for each key‑establishment event.
 
-- `chaos\_seed`: Initial state and parameters for the chaos-based generator.
+- `chaos_seed`: Initial state and parameters for the chaos-based generator.
 
-- `chaos\_output`: A fixed-length bitstring output from the chaos generator, post‑whitening.
+- `chaos_output`: A fixed-length bitstring output from the chaos generator, post‑whitening.
 
 - `OtherInfo`: Context data as described below (algorithm identifiers, key lengths, labels).
 
@@ -100,7 +100,7 @@ The KDF takes the following inputs:
 
 &nbsp; - Encoded `nonce`.
 
-&nbsp; - Encoded `chaos\_output` (or its hash).
+&nbsp; - Encoded `chaos_output` (or its hash).
 
 
 
@@ -385,6 +385,7 @@ The key-agreement layer is designed to be algorithm‑agile:
 - (Z) may in future be produced by different approved key‑establishment schemes (e.g., post‑quantum KEMs) without changing the overall KDF interface.
 
 - The KDF may be re‑parameterized to use alternate approved hashes or HKDF‑like constructions if standards evolve, as long as key roles and context encoding remain consistent.
+
 
 
 
