@@ -487,7 +487,7 @@ Base path `/api/v1` is implied in examples.
 
 Encrypts input data and returns ciphertext and MAC.
 
-*\*Request*\*
+**Request**
 
 
 ```
@@ -518,7 +518,7 @@ Body:
 
 
 
-*\*Response*\*
+**Response**
 
 
 ```
@@ -558,14 +558,15 @@ Decrypts ciphertext and verifies its MAC.
 
 
 
-*\*Request*\*
+**Request**
 
+```
 POST /api/v1/decrypt
 
 Content-Type: application/json
 
 Authorization: Bearer <token>
-
+```
 
 
 Body:
@@ -589,7 +590,7 @@ Body:
 
 
 
-*\*Response*\*
+**Response**
 
 
 ```
@@ -617,7 +618,7 @@ If MAC verification fails, the service returns `400` or `401` with an error and 
 
 Returns the complete compliance report.
 
-*\*Request*\*
+**Request**
 
 
 ```
@@ -629,7 +630,7 @@ Authorization: Bearer <token>
 
 
 
-*\*Response*\*
+**Response**
 
 
 ```
@@ -679,7 +680,7 @@ Returns lifecycle metadata for a given key.
 
 
 
-*\*Request*\*
+**Request**
 
 
 ```
@@ -691,7 +692,7 @@ Authorization: Bearer <token>
 
 
 
-*\*Response*\*
+**Response**
 
 
 ```
@@ -725,7 +726,7 @@ Triggers rotation of the given key through the key manager and HSM (if configure
 
 
 
-*\*Request*\*
+**Request**
 
 
 ```
@@ -750,7 +751,7 @@ Optional body:
 ```
 
 
-*\*Response*\*
+**Response**
 
 
 ```json
@@ -782,7 +783,7 @@ Basic liveness and readiness endpoint.
 
 
 
-*\*Request*\*
+**Request**
 
 
 ```
@@ -792,7 +793,7 @@ GET /api/v1/health
 
 
 
-*\*Response*\*
+**Response**
 
 
 ```json
@@ -951,6 +952,7 @@ Example codes:
 - Route all key‑material operations through the key manager and HSM integration where available.
 
 - Wrap calls in retry logic for transient HSM or network failures but avoid infinite retries.
+
 
 
 
