@@ -463,3 +463,8 @@ For issues or questions:
 ✅ 6-10 MB/s throughput (vectorized)
 ✅ Enterprise-grade security & compliance
 ✅ Comprehensive documentation & support
+
+
+# FUTURE
+
+ - VORTEX Mathematical Algorithm - **Increases performance up to 50% in some usecases. **
